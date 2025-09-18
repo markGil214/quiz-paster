@@ -1,0 +1,26 @@
+services:
+  # Backend API
+  - type: web
+    name: quiz-backend
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromSecret: true
+      - key: PORT
+        value: 10000
+
+  # Frontend Static Site
+  - type: web
+    name: quiz-frontend
+    env: static
+    rootDir: .
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://quiz-backend.onrender.com  # Update this with your backend URL
