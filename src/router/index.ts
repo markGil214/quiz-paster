@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import PasteQuiz from '../components/PasteQuiz.vue'
 import QuizOverview from '../components/QuizOverview.vue'
 import TakeQuiz from '../components/TakeQuiz.vue'
 import QuizResults from '../components/QuizResults.vue'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
