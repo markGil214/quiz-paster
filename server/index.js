@@ -15,6 +15,7 @@ const corsOptions = {
     'http://localhost:5174', // Local development (backup port)
     'https://quiz-frontend-abc123.onrender.com', // Replace with your actual Render frontend URL
     /\.onrender\.com$/, // Allow any Render subdomain
+    /\.vercel\.app$/, // Allow any Vercel subdomain
     // Add your custom domain here if you have one
   ],
   credentials: true,
