@@ -1,1 +1,5 @@
-/*    /index.html   200
+# Fallback for SPA routing
+/take/*   /index.html   200
+/quiz/*   /index.html   200
+/results/*   /index.html   200
+/*        /index.html   200
