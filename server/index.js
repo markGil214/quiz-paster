@@ -27,22 +27,59 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
 
-// Add CORS debugging
+// CORS configuration for production
+const corsOptions = {
+  origin: [
+    'http://localhost:5173', // Local development
+    'http://localhost:5174', // Local development (backup port)
+    'http://localhost:4173', // Local preview
+    'https://quiz-paster.vercel.app', // Your original Vercel app
+    'https://quiz-paster13.vercel.app', // Your new Vercel app
+    'https://quiz-frontend-abc123.onrender.com', // Replace with your actual Render frontend URL
+    /\.onrender\.com$/, // Allow any Render subdomain
+    /\.vercel\.app$/, // Allow any Vercel subdomain
+    // Add your custom domain here if you have one
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+
+// Manual CORS handler as backup
 app.use((req, res, next) => {
   const origin = req.get('Origin');
   console.log(`🌐 CORS Check - Origin: ${origin}`);
   console.log(`🔍 Method: ${req.method}`);
   
-  if (origin) {
-    const isAllowed = corsOptions.origin.some(allowedOrigin => {
-      if (typeof allowedOrigin === 'string') {
-        return allowedOrigin === origin;
-      } else if (allowedOrigin instanceof RegExp) {
-        return allowedOrigin.test(origin);
-      }
-      return false;
-    });
-    console.log(`✅ Origin allowed: ${isAllowed}`);
+  // List of allowed origins (same as above but as strings for manual checking)
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174', 
+    'http://localhost:4173',
+    'https://quiz-paster.vercel.app',
+    'https://quiz-paster13.vercel.app',
+    'https://quiz-frontend-abc123.onrender.com'
+  ];
+  
+  // Check if origin is explicitly allowed or matches regex patterns
+  const isExplicitlyAllowed = allowedOrigins.includes(origin);
+  const isRenderAllowed = origin && /\.onrender\.com$/.test(origin);
+  const isVercelAllowed = origin && /\.vercel\.app$/.test(origin);
+  const isAllowed = isExplicitlyAllowed || isRenderAllowed || isVercelAllowed;
+  
+  console.log(`✅ Origin allowed: ${isAllowed} (explicit: ${isExplicitlyAllowed}, render: ${isRenderAllowed}, vercel: ${isVercelAllowed})`);
+  
+  if (isAllowed) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  }
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
   
   next();
