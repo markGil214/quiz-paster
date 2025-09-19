@@ -13,14 +13,40 @@ const corsOptions = {
   origin: [
     'http://localhost:5173', // Local development
     'http://localhost:5174', // Local development (backup port)
+    'http://localhost:4173', // Local preview
+    'https://quiz-paster.vercel.app', // Your original Vercel app
+    'https://quiz-paster13.vercel.app', // Your new Vercel app
     'https://quiz-frontend-abc123.onrender.com', // Replace with your actual Render frontend URL
     /\.onrender\.com$/, // Allow any Render subdomain
     /\.vercel\.app$/, // Allow any Vercel subdomain
     // Add your custom domain here if you have one
   ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
+
+// Add CORS debugging
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  console.log(`🌐 CORS Check - Origin: ${origin}`);
+  console.log(`🔍 Method: ${req.method}`);
+  
+  if (origin) {
+    const isAllowed = corsOptions.origin.some(allowedOrigin => {
+      if (typeof allowedOrigin === 'string') {
+        return allowedOrigin === origin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    });
+    console.log(`✅ Origin allowed: ${isAllowed}`);
+  }
+  
+  next();
+});
 
 app.use(cors(corsOptions));
 app.use(express.json());
