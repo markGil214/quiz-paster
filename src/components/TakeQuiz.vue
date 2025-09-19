@@ -1,45 +1,45 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-4xl mx-auto px-4">
+  <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <!-- Loading State -->
-      <div v-if="loading" class="bg-white rounded-lg shadow-md p-8 text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <div v-if="loading" class="card text-center">
+        <div class="loading-spinner mx-auto mb-4"></div>
         <p class="text-gray-600">Loading quiz...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="bg-red-100 border border-red-200 rounded-lg p-6">
+      <div v-else-if="error" class="bg-red-50 border-2 border-red-200 rounded-xl p-4 sm:p-6">
         <h2 class="text-xl font-bold text-red-800 mb-2">Quiz Not Found</h2>
         <p class="text-red-700 mb-4">{{ error }}</p>
         <button 
           @click="$router.push('/')"
-          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          class="btn btn-danger w-full sm:w-auto"
         >
           Create New Quiz
         </button>
       </div>
 
       <!-- Quiz Header -->
-      <div v-else-if="quiz" class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-900">{{ quiz.title }}</h1>
-            <p class="text-gray-600">{{ quiz.metadata.totalQuestions }} Questions</p>
+      <div v-else-if="quiz" class="card mb-4 sm:mb-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+          <div class="text-center sm:text-left">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ quiz.title }}</h1>
+            <p class="text-gray-600 text-sm sm:text-base">{{ quiz.metadata.totalQuestions }} Questions</p>
           </div>
-          <div class="text-sm text-gray-500">
-            Quiz Code: <strong>{{ quiz.code }}</strong>
+          <div class="text-xs sm:text-sm text-gray-500 text-center sm:text-right">
+            Quiz Code: <strong class="text-lg sm:text-base">{{ quiz.code }}</strong>
           </div>
         </div>
         
         <!-- Progress Bar -->
-        <div class="mt-4">
-          <div class="flex justify-between text-sm text-gray-600 mb-2">
+        <div class="mt-4 sm:mt-6">
+          <div class="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
             <span>Question {{ currentQuestionIndex + 1 }} of {{ quiz.questions.length }}</span>
-            <span>{{ Math.round(((currentQuestionIndex + 1) / quiz.questions.length) * 100) }}% Complete</span>
+            <span class="font-medium">{{ Math.round(((currentQuestionIndex + 1) / quiz.questions.length) * 100) }}%</span>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="progress-bar">
             <div 
-              class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              class="progress-fill"
               :style="{ width: ((currentQuestionIndex + 1) / quiz.questions.length) * 100 + '%' }"
             ></div>
           </div>
@@ -47,26 +47,26 @@
       </div>
 
       <!-- Quiz Questions -->
-      <div v-if="quiz && !quizCompleted" class="bg-white rounded-lg shadow-md p-8">
+      <div v-if="quiz && !quizCompleted" class="card">
         <div v-if="currentQuestion" class="space-y-6">
           <!-- Question -->
-          <div>
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">
+          <div class="text-center sm:text-left">
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 leading-relaxed">
               {{ currentQuestion.number }}. {{ currentQuestion.question }}
             </h2>
           </div>
 
           <!-- Answer Options -->
-          <div class="space-y-4">
+          <div class="space-y-3 sm:space-y-4">
             <!-- Multiple Choice Questions -->
             <div v-if="currentQuestion.type === 'multiple-choice' || currentQuestion.options.length > 0">
               <label
                 v-for="option in currentQuestion.options"
                 :key="option.letter"
-                class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                class="flex items-start p-4 sm:p-5 border-2 rounded-xl cursor-pointer transition-all duration-200 touch-feedback hover:shadow-md"
                 :class="{
-                  'border-blue-500 bg-blue-50': selectedAnswers[currentQuestion.number] === option.letter,
-                  'border-gray-300': selectedAnswers[currentQuestion.number] !== option.letter
+                  'border-blue-500 bg-blue-50 shadow-md': selectedAnswers[currentQuestion.number] === option.letter,
+                  'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50': selectedAnswers[currentQuestion.number] !== option.letter
                 }"
               >
                 <input
@@ -74,17 +74,17 @@
                   :name="`question-${currentQuestion.number}`"
                   :value="option.letter"
                   v-model="selectedAnswers[currentQuestion.number]"
-                  class="mt-1 text-blue-600 focus:ring-blue-500"
+                  class="mt-1 w-5 h-5 text-blue-600 focus:ring-blue-500 focus:ring-2"
                 />
-                <span class="ml-3 text-gray-900">
-                  <strong>{{ option.letter }})</strong> {{ option.text }}
+                <span class="ml-3 sm:ml-4 text-gray-900 text-sm sm:text-base leading-relaxed">
+                  <strong class="text-blue-600 text-base sm:text-lg">{{ option.letter }})</strong> {{ option.text }}
                 </span>
               </label>
             </div>
             
             <!-- Identification/Short Answer Questions -->
             <div v-else-if="currentQuestion.type === 'identification' || currentQuestion.options.length === 0">
-              <div class="space-y-2">
+              <div class="space-y-3">
                 <label class="block text-sm font-medium text-gray-700">
                   Your Answer:
                 </label>
@@ -92,33 +92,33 @@
                   type="text"
                   v-model="selectedAnswers[currentQuestion.number]"
                   placeholder="Type your answer here..."
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  class="w-full px-4 py-4 text-base border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white"
                 />
-                <p class="text-sm text-gray-500">
-                  Enter your answer for this identification question.
+                <p class="text-xs sm:text-sm text-gray-500">
+                  💡 Enter your answer for this identification question.
                 </p>
               </div>
             </div>
           </div>
 
           <!-- Navigation Buttons -->
-          <div class="flex justify-between pt-6 border-t">
+          <div class="flex flex-col sm:flex-row justify-between pt-6 border-t-2 border-gray-100 space-y-3 sm:space-y-0">
             <button
               @click="previousQuestion"
               :disabled="currentQuestionIndex === 0"
-              class="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+              class="btn btn-secondary order-2 sm:order-1 w-full sm:w-auto"
             >
               ← Previous
             </button>
 
-            <div class="flex space-x-4">
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 order-1 sm:order-2">
               <!-- Skip Button -->
               <button
                 v-if="currentQuestionIndex < quiz.questions.length - 1"
                 @click="nextQuestion"
-                class="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
+                class="btn btn-warning w-full sm:w-auto"
               >
-                Skip
+                Skip →
               </button>
 
               <!-- Next Button -->
@@ -126,7 +126,7 @@
                 v-if="currentQuestionIndex < quiz.questions.length - 1"
                 @click="nextQuestion"
                 :disabled="!selectedAnswers[currentQuestion.number]"
-                class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                class="btn w-full sm:w-auto"
               >
                 Next →
               </button>
@@ -136,9 +136,9 @@
                 v-else
                 @click="handleSubmitQuiz"
                 :disabled="submitting"
-                class="px-8 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                class="btn btn-success w-full sm:w-auto font-bold text-lg py-4"
               >
-                {{ submitting ? 'Submitting...' : 'Submit Quiz' }}
+                {{ submitting ? 'Submitting...' : '🎯 Submit Quiz' }}
               </button>
             </div>
           </div>
@@ -146,40 +146,42 @@
       </div>
 
       <!-- Quiz Completed -->
-      <div v-if="quizCompleted" class="bg-white rounded-lg shadow-md p-8 text-center">
+      <div v-if="quizCompleted" class="card text-center">
         <div class="mb-6">
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">Quiz Submitted!</h2>
-          <p class="text-gray-600">Your answers have been recorded. Click below to view your results.</p>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">🎉 Quiz Submitted!</h2>
+          <p class="text-gray-600 text-sm sm:text-base">Your answers have been recorded. Click below to view your results.</p>
         </div>
         
         <button
           @click="viewResults"
-          class="px-8 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          class="btn w-full sm:w-auto px-8 py-4 text-lg font-bold"
         >
-          View Results
+          📊 View Results
         </button>
       </div>
 
       <!-- Answer Summary (if quiz completed) -->
-      <div v-if="quizCompleted" class="bg-white rounded-lg shadow-md p-6 mt-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Answers</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div v-if="quizCompleted" class="card mt-4 sm:mt-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center sm:text-left">📝 Your Answers</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           <div
             v-for="question in quiz.questions"
             :key="question.number"
-            class="p-3 border rounded-lg"
+            class="p-3 border-2 rounded-lg text-center transition-all duration-200"
             :class="{
-              'border-green-200 bg-green-50': selectedAnswers[question.number],
-              'border-gray-200 bg-gray-50': !selectedAnswers[question.number]
+              'border-green-300 bg-green-50 text-green-800': selectedAnswers[question.number],
+              'border-gray-300 bg-gray-50 text-gray-600': !selectedAnswers[question.number]
             }"
           >
-            <div class="text-sm">
-              <strong>Q{{ question.number }}:</strong>
+            <div class="text-xs sm:text-sm font-medium">
+              <strong>Q{{ question.number }}</strong>
+            </div>
+            <div class="text-xs mt-1 truncate">
               {{ selectedAnswers[question.number] || 'Skipped' }}
             </div>
           </div>

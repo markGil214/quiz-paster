@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-4xl mx-auto px-4">
+  <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-4 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <!-- Results Header -->
-      <div class="bg-white rounded-lg shadow-md p-8 mb-6 text-center">
+      <div class="card mb-4 sm:mb-6 text-center">
         <div class="mb-6">
           <!-- Score Circle -->
-          <div class="w-32 h-32 mx-auto mb-6 relative">
-            <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+          <div class="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 relative">
+            <svg class="w-24 h-24 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 120 120">
               <!-- Background circle -->
               <circle
                 cx="60"
@@ -32,17 +32,17 @@
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="text-center">
-                <div class="text-2xl font-bold" :class="scoreTextColor">
+                <div class="text-xl sm:text-2xl font-bold" :class="scoreTextColor">
                   {{ score?.percentage || 0 }}%
                 </div>
-                <div class="text-sm text-gray-600">Score</div>
+                <div class="text-xs sm:text-sm text-gray-600">Score</div>
               </div>
             </div>
           </div>
 
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Quiz Results</h1>
-          <p class="text-lg text-gray-600 mb-4">
-            You got {{ score?.correct || 0 }} out of {{ score?.total || 0 }} questions correct!
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">🎯 Quiz Results</h1>
+          <p class="text-base sm:text-lg text-gray-600 mb-4">
+            You got <strong>{{ score?.correct || 0 }}</strong> out of <strong>{{ score?.total || 0 }}</strong> questions correct!
           </p>
           
           <!-- Score Badge -->
@@ -51,58 +51,58 @@
           </div>
           
           <!-- Performance Statistics -->
-          <div v-if="score" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-blue-50 p-4 rounded-lg text-center">
-              <div class="text-2xl font-bold text-blue-600">{{ score.correct }}</div>
-              <div class="text-sm text-blue-700">Correct</div>
+          <div v-if="score" class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-blue-50 p-3 sm:p-4 rounded-xl text-center border-2 border-blue-200">
+              <div class="text-xl sm:text-2xl font-bold text-blue-600">{{ score.correct }}</div>
+              <div class="text-xs sm:text-sm text-blue-700">✅ Correct</div>
             </div>
-            <div class="bg-red-50 p-4 rounded-lg text-center">
-              <div class="text-2xl font-bold text-red-600">{{ score.incorrect || (score.total - score.correct - (score.skipped || 0)) }}</div>
-              <div class="text-sm text-red-700">Incorrect</div>
+            <div class="bg-red-50 p-3 sm:p-4 rounded-xl text-center border-2 border-red-200">
+              <div class="text-xl sm:text-2xl font-bold text-red-600">{{ score.incorrect || (score.total - score.correct - (score.skipped || 0)) }}</div>
+              <div class="text-xs sm:text-sm text-red-700">❌ Incorrect</div>
             </div>
-            <div v-if="score.skipped !== undefined" class="bg-gray-50 p-4 rounded-lg text-center">
-              <div class="text-2xl font-bold text-gray-600">{{ score.skipped }}</div>
-              <div class="text-sm text-gray-700">Skipped</div>
+            <div v-if="score.skipped !== undefined" class="bg-gray-50 p-3 sm:p-4 rounded-xl text-center border-2 border-gray-200">
+              <div class="text-xl sm:text-2xl font-bold text-gray-600">{{ score.skipped }}</div>
+              <div class="text-xs sm:text-sm text-gray-700">⏭️ Skipped</div>
             </div>
-            <div class="bg-green-50 p-4 rounded-lg text-center">
-              <div class="text-2xl font-bold text-green-600">{{ accuracyRating }}</div>
-              <div class="text-sm text-green-700">Grade</div>
+            <div class="bg-green-50 p-3 sm:p-4 rounded-xl text-center border-2 border-green-200">
+              <div class="text-xl sm:text-2xl font-bold text-green-600">{{ accuracyRating }}</div>
+              <div class="text-xs sm:text-sm text-green-700">🎓 Grade</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- No Answer Key Message -->
-      <div v-if="!hasAnswerKey" class="bg-yellow-100 border border-yellow-200 rounded-lg p-6 mb-6">
-        <div class="flex items-center">
-          <svg class="w-6 h-6 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-if="!hasAnswerKey" class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="flex items-start">
+          <svg class="w-6 h-6 text-yellow-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.856-.833-2.598 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
           </svg>
           <div>
-            <h3 class="font-medium text-yellow-800">No Answer Key Available</h3>
-            <p class="text-yellow-700 text-sm">This quiz doesn't have an answer key, so we can't calculate your score. Your responses have been recorded.</p>
+            <h3 class="font-medium text-yellow-800 text-sm sm:text-base">⚠️ No Answer Key Available</h3>
+            <p class="text-yellow-700 text-xs sm:text-sm mt-1">This quiz doesn't have an answer key, so we can't calculate your score. Your responses have been recorded.</p>
           </div>
         </div>
       </div>
 
       <!-- Detailed Results -->
-      <div v-if="hasAnswerKey && results" class="space-y-6">
+      <div v-if="hasAnswerKey && results" class="space-y-4 sm:space-y-6">
         <div
           v-for="(result, questionNum) in results"
           :key="questionNum"
-          class="bg-white rounded-lg shadow-md p-6"
+          class="card"
         >
           <!-- Question Header -->
-          <div class="flex items-start justify-between mb-4">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-3 sm:space-y-0">
             <div class="flex-1">
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                 Question {{ questionNum }}
               </h3>
-              <p class="text-gray-700">{{ result.question }}</p>
+              <p class="text-gray-700 text-sm sm:text-base leading-relaxed">{{ result.question }}</p>
             </div>
-            <div class="ml-4">
+            <div class="flex justify-center sm:justify-end">
               <span 
-                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium"
                 :class="{
                   'bg-green-100 text-green-800': result.isCorrect,
                   'bg-red-100 text-red-800': !result.isCorrect && result.userAnswer,
@@ -118,7 +118,7 @@
                 <svg v-else class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                 </svg>
-                {{ result.isCorrect ? 'Correct' : result.userAnswer ? 'Incorrect' : 'Skipped' }}
+                {{ result.isCorrect ? '✅ Correct' : result.userAnswer ? '❌ Incorrect' : '⏭️ Skipped' }}
               </span>
             </div>
           </div>
@@ -126,11 +126,11 @@
           <!-- Answer Display -->
           <div class="mt-4">
             <!-- Multiple Choice Questions -->
-            <div v-if="result.options && result.options.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div v-if="result.options && result.options.length > 0" class="grid grid-cols-1 gap-3">
               <div
                 v-for="option in result.options"
                 :key="option.letter"
-                class="p-3 border rounded-lg"
+                class="p-3 sm:p-4 border-2 rounded-xl text-sm sm:text-base"
                 :class="{
                   'border-green-500 bg-green-50': option.letter === result.correctAnswer,
                   'border-red-500 bg-red-50': option.letter === result.userAnswer && !result.isCorrect,
@@ -138,16 +138,16 @@
                   'border-blue-500 bg-blue-50': option.letter === result.userAnswer && result.isCorrect
                 }"
               >
-                <div class="flex items-center justify-between">
-                  <span class="font-medium">{{ option.letter }}) {{ option.text }}</span>
-                  <div class="flex items-center space-x-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                  <span class="font-medium"><strong class="text-base sm:text-lg">{{ option.letter }})</strong> {{ option.text }}</span>
+                  <div class="flex flex-wrap gap-2 text-xs sm:text-sm">
                     <!-- Correct Answer Badge -->
-                    <span v-if="option.letter === result.correctAnswer" class="text-green-600 text-sm font-medium">
-                      ✓ Correct
+                    <span v-if="option.letter === result.correctAnswer" class="bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                      ✓ Correct Answer
                     </span>
                     <!-- Your Answer Badge -->
-                    <span v-if="option.letter === result.userAnswer" class="text-blue-600 text-sm font-medium">
-                      Your Answer
+                    <span v-if="option.letter === result.userAnswer" class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                      👤 Your Answer
                     </span>
                   </div>
                 </div>
@@ -156,15 +156,15 @@
 
             <!-- Identification Questions -->
             <div v-else class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <!-- User's Answer -->
-                <div class="p-4 border rounded-lg" :class="{
+                <div class="p-4 border-2 rounded-xl" :class="{
                   'border-green-500 bg-green-50': result.isCorrect,
                   'border-red-500 bg-red-50': !result.isCorrect && result.userAnswer,
                   'border-gray-300 bg-gray-50': !result.userAnswer
                 }">
-                  <div class="text-sm font-medium text-gray-700 mb-2">Your Answer:</div>
-                  <div class="text-gray-900">
+                  <div class="text-xs sm:text-sm font-medium text-gray-700 mb-2">👤 Your Answer:</div>
+                  <div class="text-gray-900 text-sm sm:text-base font-medium">
                     {{ result.userAnswer || 'No answer provided' }}
                   </div>
                   <div class="mt-2 text-xs" :class="{
@@ -172,14 +172,14 @@
                     'text-red-600': !result.isCorrect && result.userAnswer,
                     'text-gray-500': !result.userAnswer
                   }">
-                    {{ result.isCorrect ? '✓ Correct' : result.userAnswer ? '✗ Incorrect' : '- Skipped' }}
+                    {{ result.isCorrect ? '✅ Correct' : result.userAnswer ? '❌ Incorrect' : '⏭️ Skipped' }}
                   </div>
                 </div>
 
                 <!-- Correct Answer -->
-                <div class="p-4 border border-green-500 bg-green-50 rounded-lg">
-                  <div class="text-sm font-medium text-green-700 mb-2">Correct Answer:</div>
-                  <div class="text-green-900 font-medium">
+                <div class="p-4 border-2 border-green-500 bg-green-50 rounded-xl">
+                  <div class="text-xs sm:text-sm font-medium text-green-700 mb-2">✅ Correct Answer:</div>
+                  <div class="text-green-900 font-medium text-sm sm:text-base">
                     {{ result.correctAnswer }}
                   </div>
                   <div class="mt-2 text-xs text-green-600">
@@ -191,9 +191,9 @@
           </div>
 
           <!-- Explanation (if not answered correctly) -->
-          <div v-if="!result.isCorrect" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p class="text-blue-800 text-sm">
-              <strong>{{ result.options && result.options.length > 0 ? 'Correct Answer:' : 'Expected Answer:' }}</strong>
+          <div v-if="!result.isCorrect" class="mt-4 p-3 sm:p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+            <p class="text-blue-800 text-xs sm:text-sm">
+              <strong>💡 {{ result.options && result.options.length > 0 ? 'Correct Answer:' : 'Expected Answer:' }}</strong>
               <span v-if="result.options && result.options.length > 0">
                 {{ result.correctAnswer }}) 
                 {{ result.options.find(opt => opt.letter === result.correctAnswer)?.text }}
@@ -210,33 +210,33 @@
       </div>
 
       <!-- Performance Analysis -->
-      <div v-if="score" class="bg-white rounded-lg shadow-md p-6 mt-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">📊 Performance Analysis</h2>
+      <div v-if="score" class="card mt-4 sm:mt-6">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-4 text-center sm:text-left">📊 Performance Analysis</h2>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Performance Level -->
           <div class="space-y-4">
             <div class="flex items-center space-x-3">
-              <div class="w-3 h-3 rounded-full" :class="{
+              <div class="w-4 h-4 rounded-full flex-shrink-0" :class="{
                 'bg-green-500': score.percentage >= 80,
                 'bg-yellow-500': score.percentage >= 60 && score.percentage < 80,
                 'bg-red-500': score.percentage < 60
               }"></div>
               <div>
-                <div class="font-semibold text-gray-900">{{ performanceAnalysis.level }} Level</div>
-                <div class="text-sm text-gray-600">{{ performanceAnalysis.message }}</div>
+                <div class="font-semibold text-gray-900 text-sm sm:text-base">{{ performanceAnalysis.level }} Level</div>
+                <div class="text-xs sm:text-sm text-gray-600">{{ performanceAnalysis.message }}</div>
               </div>
             </div>
             
             <!-- Progress Bar -->
             <div class="space-y-2">
-              <div class="flex justify-between text-sm text-gray-600">
+              <div class="flex justify-between text-xs sm:text-sm text-gray-600">
                 <span>Knowledge Level</span>
-                <span>{{ score.percentage }}%</span>
+                <span class="font-medium">{{ score.percentage }}%</span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="progress-bar">
                 <div 
-                  class="h-2 rounded-full transition-all duration-1000 ease-out"
+                  class="progress-fill"
                   :class="{
                     'bg-green-500': score.percentage >= 80,
                     'bg-yellow-500': score.percentage >= 60 && score.percentage < 80,
@@ -250,14 +250,14 @@
           
           <!-- Improvement Suggestions -->
           <div class="space-y-3">
-            <h3 class="font-semibold text-gray-900">💡 Suggestions for Improvement</h3>
+            <h3 class="font-semibold text-gray-900 text-sm sm:text-base">💡 Suggestions for Improvement</h3>
             <ul class="space-y-2">
               <li 
                 v-for="(suggestion, index) in performanceAnalysis.suggestions" 
                 :key="index"
-                class="flex items-start space-x-2 text-sm text-gray-700"
+                class="flex items-start space-x-2 text-xs sm:text-sm text-gray-700"
               >
-                <span class="text-blue-500 mt-1">•</span>
+                <span class="text-blue-500 mt-1 flex-shrink-0">•</span>
                 <span>{{ suggestion }}</span>
               </li>
             </ul>
@@ -266,26 +266,28 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-        <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+      <div class="card mt-4 sm:mt-6">
+        <div class="flex flex-col space-y-3 sm:space-y-4">
           <button
             @click="retakeQuiz"
-            class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            class="btn w-full text-base font-bold py-4"
           >
-            Retake Quiz
+            🔄 Retake Quiz
           </button>
-          <button
-            @click="createNewQuiz"
-            class="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-          >
-            Create New Quiz
-          </button>
-          <button
-            @click="shareResults"
-            class="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-          >
-            Share Results
-          </button>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              @click="createNewQuiz"
+              class="btn btn-success w-full"
+            >
+              ➕ Create New Quiz
+            </button>
+            <button
+              @click="shareResults"
+              class="btn btn-warning w-full"
+            >
+              🔗 Share Results
+            </button>
+          </div>
         </div>
       </div>
     </div>

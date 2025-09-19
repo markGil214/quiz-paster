@@ -118,3 +118,4 @@ MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/database
 PORT=5000
 NODE_ENV=development
 ```
+Trigger Vercel redeploy
