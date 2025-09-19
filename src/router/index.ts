@@ -26,11 +26,16 @@ const routes: RouteRecordRaw[] = [
     name: 'QuizResults',
     component: QuizResults,
     props: true
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: PasteQuiz
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/'),
   routes
 })
 

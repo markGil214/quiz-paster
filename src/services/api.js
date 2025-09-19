@@ -3,10 +3,6 @@ import axios from "axios";
 // Use environment variable for API base URL, fallback to localhost for development
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// Debug logging for production
-console.log('API Base URL:', API_BASE_URL);
-console.log('Environment:', import.meta.env);
-
 const API = axios.create({ baseURL: API_BASE_URL });
 
 export const createQuiz = (data) => API.post("/api/parse-quiz", data);
